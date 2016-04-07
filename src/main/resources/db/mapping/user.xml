@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sq.platform.txj.modules.indexModule.dao.UserDao">
+
+    <resultMap id="userResultMap" type="User">
+        <id property="id" column="user_id"/>
+        <result property="name" column="user_name"/>
+        <result property="password" column="user_password"/>
+        <association property="role" javaType="Role" resultMap="roleResultMap"/>
+    </resultMap>
+
+    <resultMap id="roleResultMap" type="Role">
+        <id property="id" column="role_id"/>
+        <result property="name" column="role_name"/>
+        <collection property="permissions" ofType="Permission" resultMap="permissionResultMap"/>
+    </resultMap>
+
+    <resultMap id="permissionResultMap" type="Permission">
+        <id property="id" column="permission_id"/>
+        <result property="permissionName" column="permission_name"/>
+    </resultMap>
+
+    <select id="selectUserByName" resultMap="userResultMap">
+        select t_user.id user_id, t_user.username user_name, t_user.password user_password, t_role.id role_id, t_role.rolename role_name,
+       t_permission.id permission_id, t_permission.permissionname permission_name from t_user, t_role, t_permission, t_role_permission where t_user.role_id = t_role.id and t_role.id = t_role_permission.role_id
+      and t_role_permission.permission_id = t_permission.id AND t_user.username = #{username}
+    </select>
+</mapper>
